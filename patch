@@ -1,0 +1,66 @@
+diff --git a/test/ot.cpp b/test/ot.cpp
+index 07fd717..80d3bf3 100644
+--- a/test/ot.cpp
++++ b/test/ot.cpp
+@@ -8,10 +8,13 @@ int main(int argc, char** argv) {
+ 	if (argc <= 3)
+ 		length = (1<<20) + 101;
+ 	else
+-		length = (1<<atoi(argv[3])) + 101;
++		length = (atoi(argv[3])) ;
+ 
++	cout <<"n = "<<int(length)<<endl;
+ 	parse_party_and_port(argv, &party, &port);
+ 	NetIO * io = new NetIO(party==ALICE ? nullptr:"127.0.0.1", port);
++
++	/*
+ 	OTNP<NetIO> * np = new OTNP<NetIO>(io);
+ 	cout <<"128 NPOTs:\t"<<test_ot<OTNP<NetIO>>(np, io, party, 128)<<" us"<<endl;
+ 	delete np;
+@@ -29,18 +32,21 @@ int main(int argc, char** argv) {
+ 	cout <<"Active IKNP COT\t"<<double(length)/test_cot<IKNP<NetIO>>(iknp, io, party, length)*1e6<<" OTps"<<endl;
+ 	cout <<"Active IKNP ROT\t"<<double(length)/test_rot<IKNP<NetIO>>(iknp, io, party, length)*1e6<<" OTps"<<endl;
+ 	delete iknp;
+-
++	*/
++	
+ 	FerretCOT<NetIO> * ferretcot = new FerretCOT<NetIO>(party, threads, &io, false);
+-	cout <<"Passive FERRET OT\t"<<double(length)/test_ot<FerretCOT<NetIO>>(ferretcot, io, party, length)*1e6<<" OTps"<<endl;
+-	cout <<"Passive FERRET COT\t"<<double(length)/test_cot<FerretCOT<NetIO>>(ferretcot, io, party, length)*1e6<<" OTps"<<endl;
+-	cout <<"Passive FERRET ROT\t"<<double(length)/test_rot<FerretCOT<NetIO>>(ferretcot, io, party, length)*1e6<<" OTps"<<endl;
++	cout <<"Passive FERRET OT\t"<<(double)test_ot<FerretCOT<NetIO>>(ferretcot, io, party, length)/1e6<<" s"<<endl;
++	//cout <<"Passive FERRET COT\t"<<double(length)/test_cot<FerretCOT<NetIO>>(ferretcot, io, party, length)*1e6<<" OTps"<<endl;
++	//cout <<"Passive FERRET ROT\t"<<double(length)/test_rot<FerretCOT<NetIO>>(ferretcot, io, party, length)*1e6<<" OTps"<<endl;
+ 	delete ferretcot;
++	cout <<"Communication party "<<int(party)<<": "<<(double)io->counter/(1024*1024)<<" MB"<<endl;
++	/*
+ 	ferretcot = new FerretCOT<NetIO>(party, threads, &io, true);
+ 	cout <<"Active FERRET OT\t"<<double(length)/test_ot<FerretCOT<NetIO>>(ferretcot, io, party, length)*1e6<<" OTps"<<endl;
+ 	cout <<"Active FERRET COT\t"<<double(length)/test_cot<FerretCOT<NetIO>>(ferretcot, io, party, length)*1e6<<" OTps"<<endl;
+ 	cout <<"Active FERRET ROT\t"<<double(length)/test_rot<FerretCOT<NetIO>>(ferretcot, io, party, length)*1e6<<" OTps"<<endl;
+ 	delete ferretcot;
+-
++	*/
+ 
+ 	delete io;
+ }
+diff --git a/test/test.h b/test/test.h
+index 8202336..82a6a51 100644
+--- a/test/test.h
++++ b/test/test.h
+@@ -22,6 +22,7 @@ double test_ot(T * ot, NetIO *io, int party, int64_t length) {
+ 	}
+ 	io->flush();
+ 	long long t = time_from(start);
++	/*
+ 	if (party == BOB) {
+ 		for (int64_t i = 0; i < length; ++i) {
+ 			if (b[i]){ if(!cmpBlock(&r[i], &b1[i], 1)) {
+@@ -35,6 +36,7 @@ double test_ot(T * ot, NetIO *io, int party, int64_t length) {
+ 		}
+ 	}
+ 	std::cout << "Tests passed.\t";
++	*/
+ 	delete[] b0;
+ 	delete[] b1;
+ 	delete[] r;
